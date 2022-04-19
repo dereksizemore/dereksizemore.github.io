@@ -175,7 +175,7 @@ td
 .projlink
 {
 	font-size: 18px;
-	min-width: 200px;
+	min-width: 100px;
 }
 .projname
 {
@@ -184,7 +184,7 @@ td
 	color: black;
 	text-align: right;
 	padding-right: 20px;
-	min-width: 200px;
+	min-width: 100px;
 	font-weight: 500;
 }
 #about-p
@@ -289,7 +289,6 @@ td
 	border-width: 2px;
 	border-color: #00a779;
 	box-shadow: 0px 0px 20px black;
-	margin-top: 10px;
 }
 #head-logo-img:hover
 {
@@ -390,6 +389,7 @@ td
 }
 #links
 {
+	position: relative;
 	background-color: black;
 	align-self: center;
 	font-weight: 600;
@@ -397,6 +397,7 @@ td
 	margin-bottom: 20px;
 	box-shadow: 0px 0px 15px black;
 	border-radius: 10px;
+	overflow-x: scroll;
 }
 #over
 {
@@ -456,4 +457,41 @@ td
 	box-shadow: 0px 0px 6px black;
 	text-align: center;
 	margin-bottom: 100px;
+}
+@media screen and (max-width: 1200px)
+{
+	#fg-body-c1
+	{
+		width: 10%;
+	}
+	#fg-body-c2
+	{
+		width: 80%;
+		border-radius: 20px 20px 60px 60px;
+	}
+	#fg-body-c3
+	{
+		width: 10%;
+	}
+	#head-logo-img
+	{
+		width: 75%;
+		height: auto;
+	}
+}
+
+@media screen and (max-width: 800px)
+{
+	#fg-body-c1
+	{
+		width: 5%;
+	}
+	#fg-body-c2
+	{
+		width: 90%;
+	}
+	#fg-body-c3
+	{
+		width: 5%;
+	}
 }
