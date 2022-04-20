@@ -13,17 +13,18 @@ function featureImg (imgEle)
 	div.prepend(img);
 	img.setAttribute('id', 'focus-img');
 	img.setAttribute('src', imgEle.src);
-	div.prepend(p)
-	p.setAttribute('id', 'focusExit')
-	p.innerHTML = 'X'
+	div.prepend(p);
+	p.setAttribute('id', 'focusExit');
+	p.setAttribute('class', 'no-hili');
+	p.innerHTML = 'X';
 	p.addEventListener('mouseup',event =>{
-		div.remove()
+		div.remove();
 	})
 }	
 
 portimg.forEach((item) =>{
 	item.addEventListener('mouseup',event =>{
-		featureImg(item)
+		featureImg(item);
 	})
 })
 
