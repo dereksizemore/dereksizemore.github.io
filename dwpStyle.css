@@ -123,6 +123,14 @@ td
 	text-align: right;
 	margin: 5px;
 }
+.phoneNum
+{
+	font-size: 24px;
+	color: white;
+	text-align: left;
+	margin: 5px;
+	text-indent: 0px;
+}
 .portimgsqr
 {
 	height: 250px;
