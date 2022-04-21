@@ -1,3 +1,11 @@
+/* Stylesheet ordered alphabetically */
+/* Section 1 - Attributes */
+/* Section 2 - Classes */
+/* Section 3 - ID Tags */
+/* Section 4 - Media Screens */
+
+
+/*  SECTION 1 - ATTRIBUTES */
 a
 {
 	color: #00a779;
@@ -43,6 +51,7 @@ p
 	margin: 5px;
 }
 
+/* SECTION 2 - CLASSES */
 .dark
 {
 	opacity: 40%;
@@ -194,6 +203,8 @@ p
 	text-align: center;
 	font-weight: 800;
 }
+
+/* SECTION 3 - ID TAGS */
 #about-p
 {
 	font-family: Verdana, sans-serif;
@@ -555,6 +566,8 @@ p
 	text-align: center;
 	margin-bottom: 100px;
 }
+
+/* SECTION 4 - MEDIA SCREENS */
 @media screen and (max-width: 1199px)
 {
 	#fg-body-c1
