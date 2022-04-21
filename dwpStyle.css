@@ -582,13 +582,20 @@ td
 	}
 	#focusExit
 	{	
-	 	margin-top: 100px;
-	 	left: 43%;
+	 	left: 40%;
 	}
 	#head-logo-img
 	{
 		width: 75%;
 		height: auto;
+	}
+	#next-arrow-p
+	{
+		top: 0px;
+	}
+	#prev-arrow-p
+	{
+		top: 0px;
 	}
 }
 
