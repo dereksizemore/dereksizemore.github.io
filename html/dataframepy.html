@@ -1,0 +1,240 @@
+<pre>
+import os
+import numpy as np
+import pandas as pd
+
+def sort_data(year,position):
+	year_list = []
+	for c in range(1):
+		for (root,dirs,files) in os.walk("D:/PYTON/ffb/data/source/" + str(year) + "/" + position + "/"):
+			players_and_stats = files
+		player_stats = []
+		for i in players_and_stats:
+			with open("D:/PYTON/ffb/data/source/" + str(year) + "/" + position + "/" + i, "r") as f:
+				temp_list = f.readlines()
+			player = temp_list[0]
+			key = temp_list[1].split(" ")
+			key[-1] = "POINTS"
+			stats = temp_list[2].split(" ")
+			temp_list2 = []
+			for count in range(0,len(stats),len(key)):
+				temp_list2.append(stats[count:count + len(key)])
+			player_stats.append([player,key,temp_list2[:-1]])
+		year_list.append([year,player_stats])
+		year += 1
+	return year_list
+	#?DEF
+		#- RETURNS [year,[["PLAYER NAME\n",[key],[[stats]]]]
+			# LEVEL 1 | [0] = year | [1] = nested_data |
+				# nested_data | [0] = Player | [1] = Key | [2] = Stats_list
+					# key | [0] "WEEK" | [1] "STAT" | [2] "STAT" | ect |
+					# stats_list | [0] stats_by_week | [1] stats_by_week | ect |
+						# stats_by_week | [0] "0" | [1] "200" | ect |
+
+
+def make_dataframe(count,nested_data):
+	data_table = []
+	for i in nested_data[count][2]:
+		s = pd.Series(i, index=nested_data[count][1])
+		data_table.append(s)
+	return pd.DataFrame(data_table)
+
+def make_df_list(year,position):	
+	nested_data = sort_data(year,position)
+	df_list = []
+	for year_data in nested_data:
+		for count, player in enumerate(year_data[1]):
+			df = make_dataframe(count,nested_data[0][1]).set_index('WEEK')
+			df_list.append([player[0][:-1],year,df])
+	return df_list
+
+def data_totals(position,in_data_list):
+	year_table = []
+	series_table = []
+	for i in  in_data_list:
+
+		index_list = i[2].columns.tolist()
+		
+		if position == "QB" and i[2].index.size > 4:
+			# Make a new index
+			dev_index = ["COMPS-DEV","ATTEMPTS-DEV", "PASS-YARDS-DEV", "PASS-TDS-DEV","POINTS-DEV"]
+			avg_index = []
+			
+			for i2 in index_list:
+				avg_index.append(i2 + "-AVG")
+
+
+			index = ["PLAYER","YEAR","GAMES"] + index_list + avg_index + dev_index
+			# Get Standard Deviation for marked stats
+			year_series = pd.Series(
+				[i[0],
+				i[1],
+				i[2].index.size,
+				i[2]["COMPLETIONS"].astype(float).sum(),
+				i[2]["ATTEMPTS"].astype(float).sum(),
+				i[2]["PASS-YARDS"].astype(float).sum(),
+				i[2]["PASS-TDS"].astype(float).sum(),
+				i[2]["INTERCEPTIONS"].astype(float).sum(),
+				i[2]["RUSH-ATTEMPTS"].astype(float).sum(),
+				i[2]["RUSH-YARDS"].astype(float).sum(),
+				i[2]["RUSH-TDS"].astype(float).sum(),
+				i[2]["POINTS"].astype(float).sum(),
+				i[2]["COMPLETIONS"].astype(float).mean(),
+				i[2]["ATTEMPTS"].astype(float).mean(),
+				i[2]["PASS-YARDS"].astype(float).mean(),
+				i[2]["PASS-TDS"].astype(float).mean(),
+				i[2]["INTERCEPTIONS"].astype(float).mean(),
+				i[2]["RUSH-ATTEMPTS"].astype(float).mean(),
+				i[2]["RUSH-YARDS"].astype(float).mean(),
+				i[2]["RUSH-TDS"].astype(float).mean(),
+				i[2]["POINTS"].astype(float).mean(),
+				i[2]["COMPLETIONS"].astype(float).std(),
+				i[2]["ATTEMPTS"].astype(float).std(),
+				i[2]["PASS-YARDS"].astype(float).std(),
+				i[2]["PASS-TDS"].astype(float).std(),
+				i[2]["POINTS"].astype(float).std()], index = index)
+
+			series_table.append(year_series)
+
+		elif position == "RB" and i[2].index.size > 4:
+			# Make a new index
+			dev_index = ["RUSH-ATTEMPTS-DEV","RUSH-YARDS-DEV", "TARGETS-DEV", "RECEPTIONS-DEV","REC-YARDS-DEV","POINTS-DEV"]
+			avg_index = []
+			
+			for i2 in index_list:
+				avg_index.append(i2 + "-AVG")
+
+
+			index = ["PLAYER","YEAR","GAMES"] + index_list + avg_index + dev_index
+			# Get Standard Deviation for marked stats
+			year_series = pd.Series(
+				[i[0],
+				i[1],
+				i[2].index.size,
+				i[2]["RUSH-ATTEMPTS"].astype(float).sum(),
+				i[2]["RUSH-YARDS"].astype(float).sum(),
+				i[2]["RUSH-TDS"].astype(float).sum(),
+				i[2]["TARGETS"].astype(float).sum(),
+				i[2]["RECEPTIONS"].astype(float).sum(),
+				i[2]["REC-YARDS"].astype(float).sum(),
+				i[2]["REC-TDS"].astype(float).sum(),
+				(i[2]["POINTS"].astype(float) + i[2]["RECEPTIONS"].astype(float)).sum(),
+				i[2]["RUSH-ATTEMPTS"].astype(float).mean(),
+				i[2]["RUSH-YARDS"].astype(float).mean(),
+				i[2]["RUSH-TDS"].astype(float).mean(),
+				i[2]["TARGETS"].astype(float).mean(),
+				i[2]["RECEPTIONS"].astype(float).mean(),
+				i[2]["REC-YARDS"].astype(float).mean(),
+				i[2]["REC-TDS"].astype(float).mean(),
+				(i[2]["POINTS"].astype(float) + i[2]["RECEPTIONS"].astype(float)).mean(),
+				i[2]["RUSH-ATTEMPTS"].astype(float).std(),
+				i[2]["RUSH-YARDS"].astype(float).std(),
+				i[2]["TARGETS"].astype(float).std(),
+				i[2]["RECEPTIONS"].astype(float).std(),
+				i[2]["REC-YARDS"].astype(float).std(),
+				(i[2]["POINTS"].astype(float) + i[2]["RECEPTIONS"].astype(float)).std()], index = index)
+
+			series_table.append(year_series)
+
+		elif position == "WR" and i[2].index.size > 4:
+			# Make a new index
+			dev_index = ["TARGETS-DEV", "RECEPTIONS-DEV","REC-YARDS-DEV","POINTS-DEV"]
+			avg_index = []
+			
+			for i2 in index_list:
+				avg_index.append(i2 + "-AVG")
+
+
+			index = ["PLAYER","YEAR","GAMES"] + index_list + avg_index + dev_index
+			# Get Standard Deviation for marked stats
+			year_series = pd.Series(
+				[i[0],
+				i[1],
+				i[2].index.size,
+				i[2]["TARGETS"].astype(float).sum(),
+				i[2]["RECEPTIONS"].astype(float).sum(),
+				i[2]["REC-YARDS"].astype(float).sum(),
+				i[2]["REC-TDS"].astype(float).sum(),
+				i[2]["RUSH-ATTEMPTS"].astype(float).sum(),
+				i[2]["RUSH-YARDS"].astype(float).sum(),
+				i[2]["RUSH-TDS"].astype(float).sum(),
+				(i[2]["POINTS"].astype(float) + i[2]["RECEPTIONS"].astype(float)).sum(),
+				i[2]["TARGETS"].astype(float).mean(),
+				i[2]["RECEPTIONS"].astype(float).mean(),
+				i[2]["REC-YARDS"].astype(float).mean(),
+				i[2]["REC-TDS"].astype(float).mean(),
+				i[2]["RUSH-ATTEMPTS"].astype(float).mean(),
+				i[2]["RUSH-YARDS"].astype(float).mean(),
+				i[2]["RUSH-TDS"].astype(float).mean(),
+				(i[2]["POINTS"].astype(float) + i[2]["RECEPTIONS"].astype(float)).mean(),
+				i[2]["TARGETS"].astype(float).std(),
+				i[2]["RECEPTIONS"].astype(float).std(),
+				i[2]["REC-YARDS"].astype(float).std(),
+				(i[2]["POINTS"].astype(float) + i[2]["RECEPTIONS"].astype(float)).std()], index = index)
+
+			series_table.append(year_series)
+
+		elif position == "TE" and i[2].index.size > 4:
+			# Make a new index
+			dev_index = ["TARGETS-DEV", "RECEPTIONS-DEV","REC-YARDS-DEV","POINTS-DEV"]
+			avg_index = []
+			
+			for i2 in index_list:
+				avg_index.append(i2 + "-AVG")
+
+
+			index = ["PLAYER","YEAR","GAMES"] + index_list + avg_index + dev_index
+			# Get Standard Deviation for marked stats
+			year_series = pd.Series(
+				[i[0],
+				i[1],
+				i[2].index.size,
+				i[2]["TARGETS"].astype(float).sum(),
+				i[2]["RECEPTIONS"].astype(float).sum(),
+				i[2]["REC-YARDS"].astype(float).sum(),
+				i[2]["REC-TDS"].astype(float).sum(),
+				(i[2]["POINTS"].astype(float) + i[2]["RECEPTIONS"].astype(float)).sum(),
+				i[2]["TARGETS"].astype(float).mean(),
+				i[2]["RECEPTIONS"].astype(float).mean(),
+				i[2]["REC-YARDS"].astype(float).mean(),
+				i[2]["REC-TDS"].astype(float).mean(),
+				(i[2]["POINTS"].astype(float) + i[2]["RECEPTIONS"].astype(float)).mean(),
+				i[2]["TARGETS"].astype(float).std(),
+				i[2]["RECEPTIONS"].astype(float).std(),
+				i[2]["REC-YARDS"].astype(float).std(),
+				(i[2]["POINTS"].astype(float) + i[2]["RECEPTIONS"].astype(float)).std()], index = index)
+
+			series_table.append(year_series)
+
+	return series_table
+
+
+
+def main():
+	positions = ["QB","RB","WR","TE"]
+	for position in positions:
+		data_list = []
+		year = 2015
+		for c in range(6):
+			data_list = data_list + make_df_list(year + c,position)
+
+
+		total_in_series = data_totals(position,data_list)
+		df = pd.DataFrame(total_in_series).sort_values(by='POINTS')
+		output = df.to_csv()
+
+		with open(position + ".15-20." +"5games.csv", "a") as f:
+			f.write(str(output))
+
+
+	# Add the stats together for season totals (adding receptions to points)
+	# Create Series with above data
+
+
+
+
+
+#- RUN -#
+if __name__ == "__main__":
+    main()
+</pre>

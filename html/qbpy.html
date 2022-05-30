@@ -1,0 +1,44 @@
+<pre>
+year = 2021
+posi = 10
+week = 1
+
+
+def get_data(year,posi,week):
+	outlist = []
+	with open("D:/PYTON/ffb/data/source/" + str(year) + "/yr-" + str(year) + "pos-" + str(posi) + "week-" + str(week) + ".txt", "r") as f:
+		file = f.readlines()
+		for c in range(1,len(file),13):
+			outlist.append([file[c][4:-1], week, file[c + 1][:-1], file[c + 3][:-1], file[c + 4][:-1], file[c + 5][:-1], file[c + 6][:-1], file[c + 7][:-1], file[c + 8][:-1], file[c + 9][:-1], file[c + 10][:-1], file[c + 11][:-1]])
+	return outlist
+list_of_lists = []
+
+#Creates a nested list. Each list in the list_of_lists is the weeks players and their stats.
+for count in range(17):
+	list_of_lists.append(get_data(year,posi,week))
+	week += 1
+
+players_list = []
+#list_of_lists is a list of 17 lists of a list of players who's names are stored at list_of_lists[week][0]
+for count, weeks in enumerate(list_of_lists):
+	for count2, players in enumerate(weeks):
+		#kill some spaces before names
+		if players[0][0] == " ":
+			players[0] = players[0][1:]
+		players_list.append(players[0])
+players_list = list(set(players_list))
+
+
+
+for count2, player in enumerate(players_list):
+	with open(player + "-" + str(year) + ".txt","a") as f:
+		f.write(player + "\n")
+		f.write("WEEK COMPLETIONS ATTEMPTS PASS-YARDS PASS-TDS INTERCEPTIONS RUSH-ATTEMPTS RUSH-YARDS RUSH-TDS POINTS(noPPR)\n")
+	for count3, weeks in enumerate(list_of_lists):
+		for count4, players in enumerate(weeks):
+			if players[0] == player:
+				with open(player + "-" + str(year) + ".txt","a") as f:
+					for item in players:
+						if item != players[0] and item != players[2]:
+							f.write(str(item) + " ")
+</pre>

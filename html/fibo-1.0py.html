@@ -1,0 +1,26 @@
+<pre>
+import time
+import tools as ft
+
+def main():
+	#- Get Symbol Variable from user input and store it as a string -#
+	data = []
+	symbol = input("ENTER CRYPTO SYMBOL: ")
+
+
+	while True:
+		price, price_data = ft.file_reader(symbol)
+
+		ema100day, ema20day, ema55day, fibo5up, fibo2up, fibo2down, fibo5down =	ft.math(price,price_data)
+		if len(data) > 0:
+			if data[-1] != [ema100day, ema20day, ema55day, fibo5up, fibo2up, fibo2down, fibo5down]:
+				data.append([ema100day, ema20day, ema55day, fibo5up, fibo2up, fibo2down, fibo5down])
+				print(data)
+		else:
+			data.append([ema100day, ema20day, ema55day, fibo5up, fibo2up, fibo2down, fibo5down])
+		time.sleep(1)
+
+#- RUN -#
+if __name__ == "__main__":
+    main()
+</pre>

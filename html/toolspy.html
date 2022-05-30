@@ -1,0 +1,338 @@
+<pre>
+import requests
+import json
+import websocket
+import websockets
+import time
+import numpy as np
+import asyncio
+
+
+#- Data Functions -#
+def get_url_finn(symbol,now_unix):
+	#- Set <timebase> to minute -# #!#!# _CHANGE LATER WITH INPUT_ #!#!#
+	timebase ='1'
+	#- Set <url_active> with variables -#
+	url_active = fh_url = ('https://finnhub.io/api/v1/stock/candle?symbol='
+				+ symbol + 
+				'&resolution=' 
+				+ timebase + 
+				'&from=' 
+				+ str(604800000 - int(now_unix)) + 
+				'&to=' 
+				+ now_unix + 
+				'&token=c370bc2ad3ib6g7eg4rg')
+	#- Return a list containing <crypto_bool> at index [0] and <url_active> at index [1] -#
+	return url_active
+#?DEF:	This function takes the <symbol> and <now_unix> as inputs. It determines if <crypto_bool> should be true based on <symbol>. It sets the
+			#	<active_url>. The function returns a list containing <crypto_bool> at index [0] and <url_active> at index [1].
+				#	<function>(<string>,<string>)
+					#<string>	symbol - The stock or crypto symbol entered as input
+					#<string>	now_unix - the current unix time stamp when the program was started.
+
+def get_sma_data_finn(url):
+	#- create 3 lists for this function -#
+	list_of_closes = []
+	list_of_times = []
+	list_of_vols = []
+	#- get data from finnhub -#
+	bigdata = requests.get(url)
+	#- get close, time, and volume data from bigdata -#
+	closes = bigdata.json()["c"]
+	vols = bigdata.json()["v"]
+	times = bigdata.json()["t"]
+	#- loop trough the data and add each close price, time, and volume to their respecitve output list -#
+	for count, i in enumerate(closes):
+		list_of_closes.append(closes[count])
+		list_of_vols.append(vols[count])
+		list_of_times.append(times[count])		
+#- reverse the list so recent prices are first -#
+	list_of_closes.reverse()
+	list_of_times.reverse()
+	list_of_vols.reverse()
+	#- return a list of the all the most recent close prices pulled from the api. -#
+	return list_of_closes, list_of_vols, list_of_times
+#? DEF: This functions calls the API and gets the bulk data as a json. The close price for the last 7 days(fin) or
+		#	last 1000 (crypto compare) 1 minute ticks is extracted. The most recent 100 ticks are stored into the 
+		#	<list_of_closes>. The function returns a <list_of_closes> of the most recent close prices at index position [0], 
+		#	a <list_of_times> of the most recent times in unix format at index position [1], and a <list_of_vols> of the 
+		#	most recent volumes at index position [2].
+			#	<function>(<string>)
+				#<string>	url - The API specific URL
+
+def get_url_cc(symbol,now_unix):
+	#- Set <timebase> to minute -# #!#!# _CHANGE LATER WITH INPUT_ #!#!#
+	timebase = 'minute'
+	#- Set <url_active> with variables -#
+	url_active = ('https://min-api.cryptocompare.com/data/v2/histo' 
+				+ timebase + 
+				'?fsym='
+				+ symbol +
+				'&tsym=USD&limit=1000&api_key=4166ec1f48ad4050bae9b9b0d20fc75308fb32b47a1183c0cc24023c27ba2a6a')
+	return url_active
+
+def get_sma_data_cc(url):
+	#- create 3 lists for this function -#
+	list_of_closes = []
+	list_of_times = []
+	#- get data from cryptocompare -#
+	bigdata = requests.get(url)
+	#- get close data from bigdata -#
+	data = bigdata.json()["Data"]["Data"]
+	#- loop through the close data and add it to the <list_of_closes> output
+	for count, i in enumerate(data):
+		list_of_closes.append(i["close"])
+		list_of_times.append(i["time"])
+	#- reverse the list so recent prices are first -#
+	list_of_closes.reverse()
+	list_of_times.reverse()
+	return list_of_closes, list_of_times
+
+
+def get_price_finnhub(message):
+	try:
+		#- load and store the json encoded message from the api websocket -#
+		payload = json.loads(message)
+		#- return the current price as a float -#
+		return float(payload["data"][0]["p"])
+	except:
+		pass
+#? DEF: This function is for the Finnhub API. This function generates <payload> from the json encoded <message>. 
+		#	The function returns the current price extracted from <payload>
+			#	<function>(<json>)
+				#<json>	message - bulk data from Finnhub
+
+
+def get_vol_finnhub(message):
+	try:	
+		#- load and store the json encoded message from the api websocket -#
+		payload = json.loads(message)
+		#- return the current volume as a float -#
+		return float(payload["data"][0]["v"])
+	except:
+		pass
+#? DEF: This function is for the Finnhub API. This function generates <payload> from the json encoded <message>. 
+		#	The function returns the current volume extracted from <payload>
+			#	<function>(<json>)
+				#<json>	message - bulk data from Finnhub
+
+
+#- Math Functions -#
+
+
+def simple_ma(period,list_of_closes):
+	sma = 0.0
+	#- loop through and add up the first <period> number of items in the <list_of_closes>
+	for i in range(period):
+			sma = sma + float(list_of_closes[i])
+	#- return the average -#
+	return (sma / period)
+#? DEF: This function takes <list_of_closes> the most recent closes and <period> the length of the moving average period.
+	#	It then shortens the list by the period length and converts every item in the list to a float & adds them together, 
+	#	continually storing them in the <sma> variable. The function returns the <sma> varibale divided by the length of 
+	#	the <list_of_closes> list.
+		#	<function>(<int>,<list>)
+			#<int>	period - moving average period length.
+			#<list>	list_of_closes - a list of the most recent closes defaulted to 1 second ticks by the <timebase> vaiable.
+
+
+def expo_ma(price,period,list_of_closes):
+	#- generate a moving average based on the <period> input and <list_of_closes> and store it as sma -#
+	sma = simple_ma(period,list_of_closes)
+	#- Make smoothing multiplier for EMA -#
+	multi = 2 / (period + 1)
+	#- return the EMA -#
+	return price * multi + (1 - multi) * sma
+#? DEF: This function calls the <simple_ma()> function to generate a moving average with a length of the 
+		#	<period> and stores it as <sma>. It generates a multiplier with a smoothing value of 2. The
+		#	function returns: <price> multiplied by <sma> multiplied by <multi> plus (1 minus <multi>)
+			#	<function>(<float32>,<int>,<list>)
+				#<float32>	Price - Current pulled Price
+				#<int>		Period - Selected period length for moving average
+				#<list>		list_of_closes - Input list of prices
+
+def fibo_ma_mult(list_of_closes):
+	#- create a list to store the output of moving averages-#
+	list_of_mas = []
+	#- generate a list of lists of 100 rolling close prices
+	list_of_lists = list_of_lists_fun(list_of_closes)
+	#- loop through each item in <list_of_lists> input -#
+	for i in list_of_lists:
+		#- Generate a simple moving average of an input list -#
+		sma = simple_ma(100,i)
+		#-- limit the length of the output list to the first 100 entries -#
+		if len(list_of_mas) < 100:
+			list_of_mas.append(sma)
+	return list_of_mas
+#? DEF: This function loops through the <list_of_lists> and appends a moving average <sma> of
+		#	each item to the output list. The functions returns a list of 100 moving averages as <list_of_mas>.
+			#	<function>(<list>)
+				#<list>	list_of_closes - a list containing the most recent closes
+	
+def dev_mult_fun(price,std_dev,midline):
+	#- return math, based on result of bool
+	if price > midline:
+		return (price - midline) / std_dev
+	else:
+		return (midline - price) / std_dev
+#? DEF: This function generates a list of moving averages and then does math to them. The Function returns the math.
+			#	<Function>(<float32>,<float32>,<list>)
+				#<float32>	price - Current price from websocket stream
+				#<float32>	std_dev - The standard deviation of the last 100 closes
+					#<list>	list_of_closes - a list containing the most recent closes
+
+def list_of_lists_fun(list_of_closes):
+	#- Create a list to use in the function -#
+	list_of_lists = []
+	#- Loop through the input <list_of_closes> -#
+	for count, i in enumerate(list_of_closes):
+		#- if the current loop iteration is less than the lenth of the total amount of closes stored minus 100 -#
+		if count < (len(list_of_closes) - 100):
+			#- create another list for this function to use -#
+			temp_list = []
+			#- loop 100 times, starting on whatever value the previous loops iteration variable <count> is -# 
+			for j in range(count,(100 + count),1):
+				#- add each item in the input <list_of_closes> based on the <j> variable to the temp_list -#
+				temp_list.append(list_of_closes[j])
+		#- add each temp_list to the list_of_lists -#
+			list_of_lists.append(temp_list)
+	#- return the <list_of_lists> -#
+	return list_of_lists
+#? DEF: This function generates a list of lists of 100 rolling close prices. The function takes a list of all the 
+			#	closes pulled during the api call as input. The function returns the list of lists
+				#<function>(<list>)
+					#<list>	list_of_closes - a list of all the closes from the api call
+
+def fibo(price,ema100day,level,list_of_closes,midline):
+	# Get a list of 100 moving averages from the <list_of_closes> as <list_of_mas>
+	list_of_mults = []
+	list_of_mas = fibo_ma_mult(list_of_closes)
+	#- Convert the last 100 closes to an array for numpy -# 
+	std_dev_pre = np.asarray(list_of_closes[0:99]).astype(np.float32)
+	#= Get the standard deviation of last 100 closes -#
+	std_dev = np.std(std_dev_pre)
+	for count, i in enumerate(list_of_mas):
+		#- Get the deviation multipier with  <dev_mult_fun> -#
+		dev_mult = dev_mult_fun(price,std_dev,i)
+		list_of_mults.append(dev_mult)
+	#- Set LM equal to the result of <expo_ma> -#
+	lm = expo_ma(dev_mult,100,list_of_mults)
+	lm2 = lm/2
+	lm3 = lm2*0.38196601
+	lm4 = lm*1.38196601
+	lm5 = lm*1.61803399
+	lm6 = (lm + lm2) /2
+	#- Set active LM for math based on the input <level>
+	if level == 6:
+		lm_active = lm5
+	elif level == 5:
+		lm_active = lm4
+	elif level == 4:
+		lm_active = lm
+	elif level == 3:
+		lm_active = lm6
+	elif level == 2:
+		lm_active = lm2
+	else:
+		lm_active = lm3
+	#- Return the standard deviation times the active level -#
+	return std_dev * lm_active
+#? DEF: This function generates the <list_of_mas> with the <fibo_ma_mult> function. The function gets the standard 
+		#	deviation of the <list_of_mas>. It generates a deviation multiplier using several other functions. It 
+		#	sets LM-LM6 with the <expo_ma> function and math. Its determins which LM to be active based on the input 
+		#	level. The function returns <std_dev> multplied by <lm_active>
+			#	<function>(<float32>,<float32>,<int>,<list>)
+				#<float32>	Price - Current pulled Price
+				#<float32>	ema100day - 100 day Exponential Moving Average
+				#<int>	level - level variable determins multiplier inside <fibo()> function
+				#<list>	list_of_closes - a list containing the most recent closes
+
+def math(price,list_of_closes):
+	#-# get 100 | 20 | 55 day emas #-#
+		#	<function>(<float32>,<list>)
+		#	<expo_ma>(<price>,<period>,<list_of_closes>)
+			#	price - current price of entered symbol
+			#	period - moving average period length
+			#	list_of_closes - a list containing the most recent closes
+	ema100day = expo_ma(price,100,list_of_closes)
+	ema20day = expo_ma(price,20,list_of_closes)
+	ema55day = expo_ma(price,55,list_of_closes)
+	#-# get Fibo bands #-#
+		#	<function(<float32>,<float32>,<int>,<list>)
+		#	<fibo(<price>,<ema100day>,<level>,<list_of_closeslist_of_closes>)>
+			#	Price - Current pulled Price
+			#	ema100day - 100 day Exponential Moving Average
+			# 	level - determins which math to use, SEE: fibo()
+			#	list_of_closes - a list containing the most recent closes
+	fibo5up = fibo(price,ema100day,5,list_of_closes,ema100day)
+	fibo2up = fibo(price,ema100day,2,list_of_closes,ema100day)
+	fibo2down = fibo(price,ema100day,2,list_of_closes,ema100day)
+	fibo5down = fibo(price,ema100day,5,list_of_closes,ema100day)
+	return ema100day, ema20day, ema55day, fibo5up, fibo2up, fibo2down, fibo5down
+
+#- Print/Call Functions -#
+def file_reader(symbol):
+	with open(symbol + " - RAW.txt","r") as record:
+		data = record.readlines()
+	sdata = []
+	for count, i in enumerate(data):
+		sdata.append(float(i.split(" ")[0]))
+	sdata.reverse()
+	return sdata[0], sdata[1:]
+
+def file_output(symbol,price_over_time,sma_data_times):
+	#- Append the close and timestamp to a text file -#
+	with open(symbol + " - Price uTime.txt","a") as record:
+		record.write(str(price_over_time[-1][0]) + " " + str(int(sma_data_times[0]) + 60) + " " + str(price_over_time[-1][2]) + "\n")
+	with open(symbol + " - RAW.txt", "a") as raw:
+		for count, i in enumerate(price_over_time):
+			raw.write(str(price_over_time[count][0]) + " " + str(price_over_time[count][1]) + " " + str(price_over_time[-1][2]) + "\n")
+
+def cc_file_output(symbol,price_over_time,sma_data_times):
+	#- Append the close and timestamp to a text file -#
+	with open(symbol + " - Price uTime.txt","a") as record:
+		record.write(str(price_over_time[-1][0]) + " " + str(int(sma_data_times[0]) + 60) + "\n")
+	with open(symbol + " - RAW.txt", "a") as raw:
+		for count, i in enumerate(price_over_time):
+			raw.write(str(price_over_time[count][0]) + " " + str(price_over_time[count][1]) + "\n")				
+
+def show_me(price,list_of_closes):
+	#-# get 100 | 20 | 55 day emas #-#
+		#	<function>(<float32>,<list>)
+		#	<expo_ma>(<price>,<period>,<list_of_closes>)
+			#	price - current price of entered symbol
+			#	period - moving average period length
+			#	list_of_closes - a list containing the most recent closes
+	ema100day = expo_ma(price,100,list_of_closes)
+	ema20day = expo_ma(price,20,list_of_closes)
+	ema55day = expo_ma(price,55,list_of_closes)
+	#-# get Fibo bands #-#
+		#	<function(<float32>,<float32>,<int>,<list>)
+		#	<fibo(<price>,<ema100day>,<level>,<list_of_closeslist_of_closes>)>
+			#	Price - Current pulled Price
+			#	ema100day - 100 day Exponential Moving Average
+			# 	level - determins which math to use, SEE: fibo()
+			#	list_of_closes - a list containing the most recent closes
+	fibo5up = fibo(price,ema100day,5,list_of_closes,ema100day)
+	fibo2up = fibo(price,ema100day,2,list_of_closes,ema100day)
+	fibo2down = fibo(price,ema100day,2,list_of_closes,ema100day)
+	fibo5down = fibo(price,ema100day,5,list_of_closes,ema100day)	
+
+	#- Print Message -#
+
+	print('\n\n\n #################### \n')
+	print('$$ Current Price: ' + str(price) + ' $$')
+	print("\n 20 day EMA = " + str(ema20day))
+	print("\n 55 day EMA = " + str(ema55day))
+	print('\n |------------------|')	
+	print("\n fibo up 5 = " + str(ema100day + fibo5up))
+	print("\n fibo up 2 = " + str(ema100day + fibo2up))
+	print('\n |------------------|')	
+	print("\n 100 day EMA = " + str(ema100day))
+	print('\n |------------------| ')		
+	print("\n fibo down 2 = " + str(ema100day - fibo2down))	
+	print("\n fibo down 5 = " + str(ema100day - fibo5down))	
+	print('\n #################### \n\n\n')
+#? DEF: This function takes generates variables using the <expo_ma> and <fibo> functions and prints them to the 
+		#	console in a semi-readable format. The function doesn't return anything.
+</pre>

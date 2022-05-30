@@ -1,0 +1,73 @@
+<pre>
+import requests
+import json
+import time
+import asyncio
+import websockets
+import tools as ft
+
+symbol = input("ENTER TICKER OR CRYPTO SYMBOL: ")
+
+#- get current unix time and convert it to a string for the api calls -#
+now = time.time()
+now_unix = str(int(now))
+
+#- Set the url_active variable -#
+url_active = ft.get_url_cc(symbol,now_unix)
+
+#- API CALL | Stores list of closes as sma_data
+sma_data_closes, sma_data_times = ft.get_sma_data_cc(url_active)
+
+#- Declare a list for tracking prices -#
+price_over_time = []
+
+
+async def cryptocompare():
+	api_key = "4166ec1f48ad4050bae9b9b0d20fc75308fb32b47a1183c0cc24023c27ba2a6a"
+	url = "wss://streamer.cryptocompare.com/v2?api_key=" + api_key
+	async with websockets.connect(url) as websocket:
+		await websocket.send(json.dumps({
+			"action": "SubAdd",
+			"subs": ["2~Binance~" + symbol + "~USDT"],
+		}))
+		while True:
+			try:
+				data = await websocket.recv()
+			except websockets.ConnectionClosed:
+				break
+			try:
+				data = json.loads(data)
+
+####################################################################
+####################### -- My LOGIC -- #############################
+####################################################################
+				#- make sure the recieved message has price data -#
+				if data["TYPE"] == '2':
+					try:
+						#- Try and set the <price> variable from the data stream -#
+						price = data["PRICE"]
+					except:
+						pass
+					#- add the current price and time to the <price_over_time> list -#
+					price_over_time.append([price,int(time.time())])
+					#- If the current time minus the most recent tick stored in <sma_data_times> is over 60 -#
+					if (int(time.time())-int(sma_data_times[0])) > 60  and len(price_over_time) > 1:
+						#- Delete from price an time any ticks that are over 60 seconds old -#
+						if price_over_time[-1][1] > (sma_data_times[0] + 60):
+							price_over_time.pop(-1)
+						#- get the close from the price_over_time list and insert it and a new timestamp into the respective sma lists-#
+						sma_data_closes.insert(0,price_over_time[-1][0])
+						sma_data_times.insert(0,int(sma_data_times[0]) + 60)
+						#- Append the close and timestamp to a text file -#
+						ft.cc_file_output(symbol,price_over_time,sma_data_times)
+						#- Empty <price_over_time> for next minute -#
+						while len(price_over_time) > 0:
+							price_over_time.pop(0)
+####################################################################
+####################### -- END my logic-- ##########################
+####################################################################
+			except ValueError:
+				print(data)
+
+asyncio.get_event_loop().run_until_complete(cryptocompare())
+</pre>

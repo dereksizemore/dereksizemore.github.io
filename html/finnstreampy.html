@@ -1,0 +1,67 @@
+<pre>
+import requests
+import json
+import websocket
+import time
+import tools as ft
+
+def on_message(ws, message):
+	price = ft.get_price_finnhub(message)
+	vol = ft.get_vol_finnhub(message)
+	
+	#- add the current price and time to the <price_over_time> list -#
+	price_over_time.append([price,int(time.time()),vol])
+	#- If the current time minus the most recent tick stored in <sma_data_times> is over 60 -#
+	#- if current time minus the last time in the data list is over 60, and the lenth of <price_over_time> is greater than 1(I think this is required for intermitant messages form finnhub, might look into later)
+	if (int(time.time())-int(sma_data_times[0])) > 60 and len(price_over_time) > 1:
+	#- Delete from price an time any ticks that are over 60 seconds old -#
+		if price_over_time[-1][1] > (sma_data_times[0] + 60):
+			price_over_time.pop(-1)
+		#- get the close from the price_over_time list and insert it and a new timestamp into the respective sma lists-#
+		sma_data_closes.insert(0,price_over_time[-1][0])
+		sma_data_times.insert(0,int(sma_data_times[0]) + 60)
+		sma_data_vols.insert(0,price_over_time[-1][2])
+		#- Append the close and timestamp to a text file -#
+		ft.file_output(symbol,price_over_time,sma_data_times,sma_data_vols)
+		#- Empty <price_over_time> for next minute -#
+		while len(price_over_time) > 0:
+			price_over_time.pop(0)
+
+def on_error(ws, error):
+	print(error)
+
+def on_close(ws):
+	print("### closed ###")
+
+def on_open(ws):
+	ws.send('{"type":"subscribe","symbol":"' + symbol + '"}')
+
+
+
+#- Get Symbol Variable from user input and store it as a string -#
+symbol = input("ENTER TICKER OR CRYPTO SYMBOL: ")
+
+#- get current unix time and convert it to a string for the api calls -#
+now = time.time()
+now_unix = str(int(now))
+
+#- Set the url_active variable -#
+
+url_active = ft.get_url_finn(symbol,now_unix)
+
+#- API CALL | Stores list of closes as sma_data
+sma_data_closes, sma_data_vols, sma_data_times = ft.get_sma_data_finn(url_active)
+
+#- Declare a list for tracking prices -#
+price_over_time = []
+
+
+if __name__ == "__main__":
+	websocket.enableTrace(True)
+	ws = websocket.WebSocketApp("wss://ws.finnhub.io?token=c370bc2ad3ib6g7eg4rg",
+									on_message = on_message,
+									on_error = on_error,
+									on_close = on_close)
+	ws.on_open = on_open
+	ws.run_forever()
+</pre>
