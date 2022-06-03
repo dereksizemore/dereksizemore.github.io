@@ -107,7 +107,7 @@ designport.addEventListener('mouseup',event =>{
 })
 
 resume.addEventListener('mouseup',event =>{
-	alert("######################\nDOWNLOAD INSTRUCTIONS\n######################\n This link will take you to the most up to date version of my portfolio on docs.google.com.\n\n To download it in the format that is most convenient for you, simply click 'File' in the menu bar of the new window that opens and then navigate to 'download'.")
+	alert("######################\nDOWNLOAD INSTRUCTIONS\n######################\n This link will take you to the most up to date version of my resume on docs.google.com.\n\n To download it in the format that is most convenient for you, simply click 'File' in the menu bar of the new window that opens and then navigate to 'download'.")
 })
 
 drop1.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
