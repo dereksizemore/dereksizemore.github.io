@@ -6,6 +6,7 @@ const designport = document.querySelector('#designport');
 const python = document.querySelector('#pythonport');
 const scroll = document.querySelector('#sub-title-scroll');
 const h1 = document.querySelector('#text-head-main');
+const resume = document.querySelector('#resume');
 const drop1 = document.querySelector('#drop1');
 let drop1toggle = true;
 const drop2 = document.querySelector('#drop2');
@@ -14,6 +15,42 @@ const drop3 = document.querySelector('#drop3');
 let drop3toggle = true;
 const drop4 = document.querySelector('#drop4');
 let drop4toggle = true;
+
+function dropdown(toggle,id,list)
+{
+	if (toggle === true)
+	{
+		const div = document.createElement('div');
+		const ul = document.createElement('ul');
+
+
+		div.setAttribute('class', 'dropdown-sub');
+		div.classList.add("no-hili");
+		ul.setAttribute('class', 'dropdown-text-li');
+
+		ul.innerHTML = list;
+
+		id.firstChild.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.innerHTML = "&#8673;&nbsp;";
+		id.appendChild(div);
+		div.appendChild(ul);
+		return false;
+	}
+	else
+	{
+		id.firstChild.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.innerHTML = "&#8675;&nbsp;";
+		document.querySelector('.dropdown-sub').remove();
+		return true;
+	}
+}
+
+function dropdownHoverOn(id){
+	id.firstChild.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.classList.remove("dropdown-text-arrow");
+	id.firstChild.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.classList.add("dropdown-text-arrow-hover");
+}
+function dropdownHoverOut(id){
+	id.firstChild.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.classList.remove("dropdown-text-arrow-hover");
+	id.firstChild.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.classList.add("dropdown-text-arrow");
+}
 
 about.addEventListener('mouseover',event =>{
 	about.firstChild.nextElementSibling.classList.add('dark')
@@ -69,41 +106,9 @@ designport.addEventListener('mouseup',event =>{
 	location.href = "html/designport.html";
 })
 
-function dropdown(toggle,id,list)
-{
-	if (toggle === true)
-	{
-		const div = document.createElement('div');
-		const ul = document.createElement('ul');
-
-
-		div.setAttribute('class', 'dropdown-sub');
-		div.classList.add("no-hili");
-		ul.setAttribute('class', 'dropdown-text-li');
-
-		ul.innerHTML = list;
-
-		id.firstChild.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.innerHTML = "&#8673;&nbsp;";
-		id.appendChild(div);
-		div.appendChild(ul);
-		return false;
-	}
-	else
-	{
-		id.firstChild.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.innerHTML = "&#8675;&nbsp;";
-		document.querySelector('.dropdown-sub').remove();
-		return true;
-	}
-}
-
-function dropdownHoverOn(id){
-	id.firstChild.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.classList.remove("dropdown-text-arrow");
-	id.firstChild.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.classList.add("dropdown-text-arrow-hover");
-}
-function dropdownHoverOut(id){
-	id.firstChild.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.classList.remove("dropdown-text-arrow-hover");
-	id.firstChild.nextElementSibling.firstChild.nextElementSibling.nextElementSibling.classList.add("dropdown-text-arrow");
-}
+resume.addEventListener('mouseup',event =>{
+	alert("######################\nDOWNLOAD INSTRUCTIONS\n######################\n This link will take you to the most up to date version of my portfolio on docs.google.com.\n\n To download it in the format that is most convenient for you, simply click 'File' in the menu bar of the new window that opens and then navigate to 'download'.")
+})
 
 drop1.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
 	const list = "<li>HTML5</li><li>CSS</li><li>Javascript (ES6)</li><li>Python 3.7</li><li>Git</li><li>GitHub</li><li>Shopify</li><li>Wordpress</li>";

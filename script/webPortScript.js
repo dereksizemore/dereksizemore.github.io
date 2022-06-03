@@ -16,6 +16,8 @@ const webproject3 = document.querySelector('#webproject3');
 let webproject3toggle = true;
 const webproject4 = document.querySelector('#webproject4');
 let webproject4toggle = true;
+const webproject5 = document.querySelector('#webproject5');
+let webproject5toggle = true;
 let weblearn1 = document.querySelector('#weblearn1');
 let weblearn1toggle = true;
 const weblearn2 = document.querySelector('#weblearn2');
@@ -24,6 +26,8 @@ const weblearn3 = document.querySelector('#weblearn3');
 let weblearn3toggle = true;
 const weblearn4 = document.querySelector('#weblearn4');
 let weblearn4toggle = true;
+const weblearn5 = document.querySelector('#weblearn5');
+let weblearn5toggle = true;
 
 
 function changeIframe(ele,filesrc)
@@ -148,6 +152,17 @@ webproject4.addEventListener('mouseout',event =>{
 	dropdownHoverOut(webproject4);
 })
 
+webproject5.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
+	const list = "<p>This is the last version of the first HTML website I made. It was a blog, lifestyle webpage, and community that was going to take over the interenet... or so I thought.</p>";
+	webproject5toggle = dropdown(webproject5toggle,webproject5,list);
+})
+webproject5.addEventListener('mouseover',event =>{
+	dropdownHoverOn(webproject5);
+})
+webproject5.addEventListener('mouseout',event =>{
+	dropdownHoverOut(webproject5);
+})
+
 weblearn1.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
 	const list = "<li>JSX</li><li>node.js</li><li>React</li><li>State</li><li>State-Management</li>";
 	weblearn1toggle = dropdown(weblearn1toggle,weblearn1,list);
@@ -171,7 +186,7 @@ weblearn2.addEventListener('mouseout',event =>{
 })
 
 weblearn3.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>Javascript</li><li>jQuery</li><li>node.js</li><li>State Management</li><li>Working With An Owner Group</li>";
+	const list = "<li>DOM Control</li><li>Javascript</li><li>jQuery</li><li>node.js</li><li>State Management</li><li>Working With An Owner Group</li>";
 	weblearn3toggle = dropdown(weblearn3toggle,weblearn3,list);
 })
 weblearn3.addEventListener('mouseover',event =>{
@@ -190,6 +205,17 @@ weblearn4.addEventListener('mouseover',event =>{
 })
 weblearn4.addEventListener('mouseout',event =>{
 	dropdownHoverOut(weblearn4);
+})
+
+weblearn5.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
+	const list = "<li>HTML</li><li>Inline Styling</li>";
+	weblearn5toggle = dropdown(weblearn5toggle,weblearn5,list);
+})
+weblearn5.addEventListener('mouseover',event =>{
+	dropdownHoverOn(weblearn5);
+})
+weblearn5.addEventListener('mouseout',event =>{
+	dropdownHoverOut(weblearn5);
 })
 
 
