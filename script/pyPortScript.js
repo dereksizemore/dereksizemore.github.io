@@ -190,7 +190,7 @@ pyproject7.addEventListener('mouseout',event =>{
 })
 
 pylearn1.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>Async Functions</li><li>JSON</li><li>Separating Functions</li><li>Sockets</li>";
+	const list = "<li># Async Functions</li><li># JSON</li><li># Separating Functions</li><li># Sockets</li>";
 	pylearn1toggle = dropdown(pylearn1toggle,pylearn1,list);
 })
 pylearn1.addEventListener('mouseover',event =>{
@@ -201,7 +201,7 @@ pylearn1.addEventListener('mouseout',event =>{
 })
 
 pylearn2.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>Data Management</li><li>G-Suite API</li>";
+	const list = "<li># Data Management</li><li># G-Suite API</li>";
 	pylearn2toggle = dropdown(pylearn2toggle,pylearn2,list);
 })
 pylearn2.addEventListener('mouseover',event =>{
@@ -212,7 +212,7 @@ pylearn2.addEventListener('mouseout',event =>{
 })
 
 pylearn3.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>Data Organization</li>";
+	const list = "<li># Data Organization</li>";
 	pylearn3toggle = dropdown(pylearn3toggle,pylearn3,list);
 })
 pylearn3.addEventListener('mouseover',event =>{
@@ -223,7 +223,7 @@ pylearn3.addEventListener('mouseout',event =>{
 })
 
 pylearn4.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>BeautifulSoup Package</li><li>SEC Edgar System</li><li>Selenium Package</li>";
+	const list = "<li># BeautifulSoup Package</li><li># SEC Edgar System</li><li># Selenium Package</li>";
 	pylearn4toggle = dropdown(pylearn4toggle,pylearn4,list);
 })
 pylearn4.addEventListener('mouseover',event =>{
@@ -234,7 +234,7 @@ pylearn4.addEventListener('mouseout',event =>{
 })
 
 pylearn5.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>Dataframes</li><li>numpy Package</li><li>os Package</li><li>pandas Package</li>";
+	const list = "<li># Dataframes</li><li># numpy Package</li><li># os Package</li><li># pandas Package</li>";
 	pylearn5toggle = dropdown(pylearn5toggle,pylearn5,list);
 })
 pylearn5.addEventListener('mouseover',event =>{
@@ -245,7 +245,7 @@ pylearn5.addEventListener('mouseout',event =>{
 })
 
 pylearn6.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>Game State</li><li>Nested Loops</li><li>Objects</li><li>Version Management</li>";
+	const list = "<li># Game State</li><li># Nested Loops</li><li># Objects</li><li># Version Management</li>";
 	pylearn6toggle = dropdown(pylearn6toggle,pylearn6,list);
 })
 pylearn6.addEventListener('mouseover',event =>{
@@ -256,7 +256,7 @@ pylearn6.addEventListener('mouseout',event =>{
 })
 
 pylearn7.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>Python 3.7</li>";
+	const list = "<li># Python 3.7</li>";
 	pylearn7toggle = dropdown(pylearn7toggle,pylearn7,list);
 })
 pylearn7.addEventListener('mouseover',event =>{

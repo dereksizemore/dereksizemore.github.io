@@ -218,7 +218,7 @@ webproject5.addEventListener('mouseout',event =>{
 })
 
 weblearn6.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>Chrome API</li><li>Runtime Messages</li><li>Unit Testing</li><li>Mutation Observers</li>";
+	const list = "<li>#Chrome API</li><li>#Runtime Messages</li><li>#Unit Testing</li><li>#Mutation Observers</li>";
 	weblearn6toggle = dropdown(weblearn6toggle,weblearn6,list);
 })
 weblearn6.addEventListener('mouseover',event =>{
@@ -229,7 +229,7 @@ weblearn6.addEventListener('mouseout',event =>{
 })
 
 weblearn1.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>JSX</li><li>node.js</li><li>React</li><li>State</li><li>State-Management</li>";
+	const list = "<li>#JSX</li><li>#node.js</li><li>#React</li><li>#State</li><li>#State-Management</li>";
 	weblearn1toggle = dropdown(weblearn1toggle,weblearn1,list);
 })
 weblearn1.addEventListener('mouseover',event =>{
@@ -240,7 +240,7 @@ weblearn1.addEventListener('mouseout',event =>{
 })
 
 weblearn2.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>.liquid File Extension</li><li>Liquid Logic</li><li>Liquid Templating</li><li>Shopify Pagebuilder</li><li>Shopify </li><li>Shopify Product Creation</li>";
+	const list = "<li>#.liquid File Extension</li><li>#Liquid Logic</li><li>#Liquid Templating</li><li>#Shopify Pagebuilder</li><li>#Shopify</li><li>#Shopify Product Creation</li>";
 	weblearn2toggle = dropdown(weblearn2toggle,weblearn2,list);
 })
 weblearn2.addEventListener('mouseover',event =>{
@@ -251,7 +251,7 @@ weblearn2.addEventListener('mouseout',event =>{
 })
 
 weblearn3.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>DOM Control</li><li>Javascript</li><li>jQuery</li><li>node.js</li><li>State Management</li><li>Working With An Owner Group</li>";
+	const list = "<li>#DOM Control</li><li>#Javascript</li><li>#jQuery</li><li>#node.js</li><li>#State Management</li><li>#Working With An Owner Group</li>";
 	weblearn3toggle = dropdown(weblearn3toggle,weblearn3,list);
 })
 weblearn3.addEventListener('mouseover',event =>{
@@ -262,7 +262,7 @@ weblearn3.addEventListener('mouseout',event =>{
 })
 
 weblearn4.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>Display Optimization</li><li>Templating</li><li>Web Design Principles</li>";
+	const list = "<li>#Display Optimization</li><li>#Templating</li><li>#Web Design Principles</li>";
 	weblearn4toggle = dropdown(weblearn4toggle,weblearn4,list);
 })
 weblearn4.addEventListener('mouseover',event =>{
@@ -273,7 +273,7 @@ weblearn4.addEventListener('mouseout',event =>{
 })
 
 weblearn5.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
-	const list = "<li>HTML</li><li>Inline Styling</li>";
+	const list = "<li>#HTML</li><li>#Inline Styling</li>";
 	weblearn5toggle = dropdown(weblearn5toggle,weblearn5,list);
 })
 weblearn5.addEventListener('mouseover',event =>{
