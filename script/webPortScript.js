@@ -6,6 +6,13 @@ const oldweb1 = document.querySelector('#oldweb1');
 const oldweb2 = document.querySelector('#oldweb2');
 const oldweb3 = document.querySelector('#oldweb3');
 const oldweb4 = document.querySelector('#oldweb4');
+const toolbox1 = document.querySelector("#toolbox1");
+const toolbox2 = document.querySelector("#toolbox2");
+const toolbox3 = document.querySelector("#toolbox3");
+const toolbox4 = document.querySelector("#toolbox4");
+const toolbox5 = document.querySelector("#toolbox5");
+const toolbox6 = document.querySelector("#toolbox6");
+const toolbox7 = document.querySelector("#toolbox7");
 const designport = document.querySelector('#designport');
 const python = document.querySelector('#pythonport');
 let webproject1 = document.querySelector('#webproject1');
@@ -18,6 +25,8 @@ const webproject4 = document.querySelector('#webproject4');
 let webproject4toggle = true;
 const webproject5 = document.querySelector('#webproject5');
 let webproject5toggle = true;
+const webproject6 = document.querySelector('#webproject6');
+let webproject6toggle = true;
 let weblearn1 = document.querySelector('#weblearn1');
 let weblearn1toggle = true;
 const weblearn2 = document.querySelector('#weblearn2');
@@ -28,11 +37,17 @@ const weblearn4 = document.querySelector('#weblearn4');
 let weblearn4toggle = true;
 const weblearn5 = document.querySelector('#weblearn5');
 let weblearn5toggle = true;
+const weblearn6 = document.querySelector('#weblearn6');
+let weblearn6toggle = true;
 
 
 function changeIframe(ele,filesrc)
 {
 	ele.parentNode.parentNode.nextElementSibling.firstChild.nextElementSibling.src = filesrc;
+}
+function changeIframe2(ele,filesrc)
+{
+	ele.parentNode.parentNode.nextElementSibling.src = filesrc;
 }
 
 function changeIframeActive(ele)
@@ -108,6 +123,45 @@ oldweb4.parentNode.addEventListener('mouseup',event =>{
 	changeIframeActive(oldweb4);
 })
 
+toolbox1.parentNode.addEventListener('mouseup',event => {
+	changeIframe2(toolbox1,'../img/toolbox1.jpg');
+	changeIframeActive(toolbox1);
+})
+toolbox2.parentNode.addEventListener('mouseup',event => {
+	changeIframe2(toolbox2,'../img/toolbox2.jpg');
+	changeIframeActive(toolbox2);
+})
+toolbox3.parentNode.addEventListener('mouseup',event => {
+	changeIframe2(toolbox3,'../img/toolbox3.jpg');
+	changeIframeActive(toolbox3);
+})
+toolbox4.parentNode.addEventListener('mouseup',event => {
+	changeIframe2(toolbox4,'../img/toolbox4.jpg');
+	changeIframeActive(toolbox4);
+})
+toolbox5.parentNode.addEventListener('mouseup',event => {
+	changeIframe2(toolbox5,'../img/toolbox5.jpg');
+	changeIframeActive(toolbox5);
+})
+toolbox6.parentNode.addEventListener('mouseup',event => {
+	changeIframe2(toolbox6,'../img/toolbox6.jpg');
+	changeIframeActive(toolbox6);
+})
+toolbox7.parentNode.addEventListener('mouseup',event => {
+	changeIframe2(toolbox7,'../img/toolbox7.jpg');
+	changeIframeActive(toolbox7);
+})
+webproject6.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
+	const list = "<p>I started working on Pua's Toolbox after a discussion I had with my wife and our business partner. The state of Oklahoma, along with OMMA, mandated an inventory tracking software called Metrc. For the most part, Metrc does it's job admirably and is easy to understand, but it isn't perfect. The biggest hole is invoicing. There simply isn't an invoicing option inside the software and the third party options, from talking to people using them, are overpriced and under featured. My extension changes that! With 3 clicks in my toolbox, it will pull dynamic, state-ful order and product data from the DOM and provide a user-friendly screen to add itemized pricing. One final click will have a well formatted and printer friendly invoice.</p>";
+	webproject6toggle = dropdown(webproject6toggle,webproject6,list);
+})
+webproject6.addEventListener('mouseover',event =>{
+	dropdownHoverOn(webproject6);
+})
+webproject6.addEventListener('mouseout',event =>{
+	dropdownHoverOut(webproject6);
+})
+
 webproject1.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
 	const list = "<p>This is a code-along React project I completed to learn React, State, and State-Management.</p>";
 	webproject1toggle = dropdown(webproject1toggle,webproject1,list);
@@ -161,6 +215,17 @@ webproject5.addEventListener('mouseover',event =>{
 })
 webproject5.addEventListener('mouseout',event =>{
 	dropdownHoverOut(webproject5);
+})
+
+weblearn6.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
+	const list = "<li>Chrome API</li><li>Runtime Messages</li><li>Unit Testing</li><li>Mutation Observers</li>";
+	weblearn6toggle = dropdown(weblearn6toggle,weblearn6,list);
+})
+weblearn6.addEventListener('mouseover',event =>{
+	dropdownHoverOn(weblearn6);
+})
+weblearn6.addEventListener('mouseout',event =>{
+	dropdownHoverOut(weblearn6);
 })
 
 weblearn1.firstChild.nextElementSibling.addEventListener('mouseup',event =>{
