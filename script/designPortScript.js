@@ -38,7 +38,7 @@ function featureImg (imgEle)
 		})
 	}
 
-	if (imgEle.previousElementSibling !== null)
+	if (imgEle.previousElementSibling.tagName !== "P")
 	{
 		p = document.createElement('p');
 		div.prepend(p);
